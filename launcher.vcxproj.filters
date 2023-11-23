@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Gamespy">
+      <UniqueIdentifier>{8f2fbc6d-ab45-4102-907a-6a36729a48b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Gamespy\common">
+      <UniqueIdentifier>{0157e86f-4fb6-4fc3-858f-2e5f22d4cc02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Gamespy\common\win32">
+      <UniqueIdentifier>{6f1341d0-2915-4b20-b2e4-762abbfaaa8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Gamespy\gt2">
+      <UniqueIdentifier>{f437136e-3e38-48fe-833f-0491b6062087}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Gamespy\ghttp">
+      <UniqueIdentifier>{7972e7fa-b27f-4014-a4b3-eb6e618f2a2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Gamespy\serverbrowsing">
+      <UniqueIdentifier>{52582dcb-fe30-49b5-bfcd-aff6be56b8df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Gamespy\natneg">
+      <UniqueIdentifier>{4012635c-1054-4024-9054-57113c78108e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Gamespy\qr2">
+      <UniqueIdentifier>{41fd4111-e0ea-4d19-bc20-45d3e99ad6a1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\nonport.c">
+      <Filter>Source Files\Gamespy</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\md5c.c">
+      <Filter>Source Files\Gamespy</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\hashtable.c">
+      <Filter>Source Files\Gamespy</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\darray.c">
+      <Filter>Source Files\Gamespy</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\common\gsAvailable.c">
+      <Filter>Source Files\Gamespy\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\common\gsCore.c">
+      <Filter>Source Files\Gamespy\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\common\gsCrypt.c">
+      <Filter>Source Files\Gamespy\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\common\gsLargeInt.c">
+      <Filter>Source Files\Gamespy\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\common\gsRC4.c">
+      <Filter>Source Files\Gamespy\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\common\gsResultCodes.c">
+      <Filter>Source Files\Gamespy\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\common\gsSHA1.c">
+      <Filter>Source Files\Gamespy\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\common\gsSoap.c">
+      <Filter>Source Files\Gamespy\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\common\gsSSL.c">
+      <Filter>Source Files\Gamespy\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\common\gsStringUtil.c">
+      <Filter>Source Files\Gamespy\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\common\gsUdpEngine.c">
+      <Filter>Source Files\Gamespy\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\common\gsXML.c">
+      <Filter>Source Files\Gamespy\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\gt2\gt2Auth.c">
+      <Filter>Source Files\Gamespy\gt2</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\gt2\gt2Buffer.c">
+      <Filter>Source Files\Gamespy\gt2</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\gt2\gt2Callback.c">
+      <Filter>Source Files\Gamespy\gt2</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\gt2\gt2Connection.c">
+      <Filter>Source Files\Gamespy\gt2</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\gt2\gt2Encode.c">
+      <Filter>Source Files\Gamespy\gt2</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\gt2\gt2Filter.c">
+      <Filter>Source Files\Gamespy\gt2</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\gt2\gt2Main.c">
+      <Filter>Source Files\Gamespy\gt2</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\gt2\gt2Message.c">
+      <Filter>Source Files\Gamespy\gt2</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\gt2\gt2Socket.c">
+      <Filter>Source Files\Gamespy\gt2</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\gt2\gt2Utility.c">
+      <Filter>Source Files\Gamespy\gt2</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\ghttp\ghttpBuffer.c">
+      <Filter>Source Files\Gamespy\ghttp</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\ghttp\ghttpCallbacks.c">
+      <Filter>Source Files\Gamespy\ghttp</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\ghttp\ghttpCommon.c">
+      <Filter>Source Files\Gamespy\ghttp</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\ghttp\ghttpConnection.c">
+      <Filter>Source Files\Gamespy\ghttp</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\ghttp\ghttpEncryption.c">
+      <Filter>Source Files\Gamespy\ghttp</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\ghttp\ghttpMain.c">
+      <Filter>Source Files\Gamespy\ghttp</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\ghttp\ghttpPost.c">
+      <Filter>Source Files\Gamespy\ghttp</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\ghttp\ghttpProcess.c">
+      <Filter>Source Files\Gamespy\ghttp</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\serverbrowsing\sb_crypt.c">
+      <Filter>Source Files\Gamespy\serverbrowsing</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\serverbrowsing\sb_queryengine.c">
+      <Filter>Source Files\Gamespy\serverbrowsing</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\serverbrowsing\sb_server.c">
+      <Filter>Source Files\Gamespy\serverbrowsing</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\serverbrowsing\sb_serverbrowsing.c">
+      <Filter>Source Files\Gamespy\serverbrowsing</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\serverbrowsing\sb_serverlist.c">
+      <Filter>Source Files\Gamespy\serverbrowsing</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\natneg\natneg.c">
+      <Filter>Source Files\Gamespy\natneg</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\natneg\NATify.c">
+      <Filter>Source Files\Gamespy\natneg</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\qr2\qr2regkeys.c">
+      <Filter>Source Files\Gamespy\qr2</Filter>
+    </ClCompile>
+    <ClCompile Include="Gamespy\qr2\qr2.c">
+      <Filter>Source Files\Gamespy\qr2</Filter>
+    </ClCompile>
+    <ClCompile Include="gamespy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="launch_samp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="launcher.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Windows.Ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="samp.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

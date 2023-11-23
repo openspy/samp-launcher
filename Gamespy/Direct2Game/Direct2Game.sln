@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Direct2GameLib", "Direct2GameLib\Direct2GameLib.vcproj", "{B41AC829-4234-4F02-8045-22EF964933C3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Direct2GameTest", "Direct2GameTest\Direct2GameTest.vcproj", "{22D8625D-5668-40A7-AFDA-5EED1A5244AE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B41AC829-4234-4F02-8045-22EF964933C3} = {B41AC829-4234-4F02-8045-22EF964933C3}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1C323B7E-5259-42CC-838C-12641DBE9BEA}"
+	ProjectSection(SolutionItems) = preProject
+		changelog.txt = changelog.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://tfs.ign.com:8080/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Direct2GameLib\\Direct2GameLib.vcproj
+		SccProjectName1 = Direct2GameLib
+		SccLocalPath1 = Direct2GameLib
+		SccProjectUniqueName2 = Direct2GameTest\\Direct2GameTest.vcproj
+		SccProjectName2 = Direct2GameTest
+		SccLocalPath2 = Direct2GameTest
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B41AC829-4234-4F02-8045-22EF964933C3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B41AC829-4234-4F02-8045-22EF964933C3}.Debug|Win32.Build.0 = Debug|Win32
+		{B41AC829-4234-4F02-8045-22EF964933C3}.Release|Win32.ActiveCfg = Release|Win32
+		{B41AC829-4234-4F02-8045-22EF964933C3}.Release|Win32.Build.0 = Release|Win32
+		{22D8625D-5668-40A7-AFDA-5EED1A5244AE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{22D8625D-5668-40A7-AFDA-5EED1A5244AE}.Debug|Win32.Build.0 = Debug|Win32
+		{22D8625D-5668-40A7-AFDA-5EED1A5244AE}.Release|Win32.ActiveCfg = Release|Win32
+		{22D8625D-5668-40A7-AFDA-5EED1A5244AE}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

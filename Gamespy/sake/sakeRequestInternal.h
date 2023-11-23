@@ -1,0 +1,67 @@
+///////////////////////////////////////////////////////////////////////////////
+// File:	sakeRequestInternal.h
+// SDK:		GameSpy Sake Persistent Storage SDK
+//
+// Copyright Notice: This file is part of the GameSpy SDK designed and 
+// developed by GameSpy Industries. Copyright (c) 2008-2009 GameSpy Industries, Inc.
+
+#ifndef __SAKEREQUESTINTERNAL_H__
+#define __SAKEREQUESTINTERNAL_H__
+
+#include "sakeMain.h"
+#include "../common/gsSoap.h"
+
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+#define SAKEI_REQUEST_SAFE_MALLOC(dest, type) SAKEI_REQUEST_SAFE_MALLOC_ARRAY(dest, type, 1)
+#define SAKEI_REQUEST_SAFE_MALLOC_ARRAY(dest, type, num) {\
+	dest = (type*)gsimalloc(sizeof(type)*num); /*malloc*/ \
+	if(!dest) goto out_of_mem_cleanup;         /*check*/  \
+	memset(dest, 0, sizeof(type)*num); }       /*zero*/
+
+#define SAKEI_FUNC_NAME_STRINGS(func) func,\
+	"SOAPAction: \"http://gamespy.net/sake/" func "\"",\
+	func "Response",\
+	func "Result"
+
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+typedef struct
+{
+	size_t      mSakeOutputSize;
+	const char *mFuncName;
+	const char *mSoapAction;
+	const char *mResponseTag;
+	const char *mResultTag;
+
+	SAKEStartRequestResult (*mValidateInputFunc)(SAKERequest request);
+	SAKEStartRequestResult (*mFillSoapRequestFunc)(SAKERequest request);
+	SAKERequestResult      (*mProcessSoapResponseFunc)(SAKERequest request);
+	void                   (*mFreeDataFunc)(SAKERequest request);
+} SAKEIRequestInfo;
+
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+SAKEStartRequestResult SAKE_CALL sakeiStartRequest(SAKERequest request, SAKEIRequestInfo * info);
+
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+#if defined(__cplusplus)
+} // extern "C"
+#endif
+
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+#endif // __SAKEREQUESTINTERNAL_H__
