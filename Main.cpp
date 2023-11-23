@@ -141,6 +141,45 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         (HINSTANCE)hInstance,
         NULL);      // Pointer not needed.
 
+    HWND hwndFavourites = CreateWindow(
+        "BUTTON",  // Predefined class; Unicode assumed 
+        "Favourites",      // Button text 
+        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON,  // Styles 
+        120,         // x position 
+        25,         // y position 
+        105,        // Button width
+        15,        // Button height
+        filterGroup,     // Parent window
+        (HMENU)ID_QUERY_FAVOURITES,       // No menu.
+        (HINSTANCE)hInstance,
+        NULL);      // Pointer not needed.
+
+    CreateWindow(
+        "BUTTON",  // Predefined class; Unicode assumed 
+        "Internet",      // Button text 
+        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON,  // Styles 
+        120,         // x position 
+        45,         // y position 
+        105,        // Button width
+        15,        // Button height
+        filterGroup,     // Parent window
+        (HMENU)ID_QUERY_OPENSPY,       // No menu.
+        (HINSTANCE)hInstance,
+        NULL);      // Pointer not needed.
+
+    CreateWindow(
+        "BUTTON",  // Predefined class; Unicode assumed 
+        "OpenSpy",      // Button text 
+        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON,  // Styles 
+        120,         // x position 
+        65,         // y position 
+        105,        // Button width
+        15,        // Button height
+        filterGroup,     // Parent window
+        (HMENU)ID_QUERY_OPENSPY_HOSTED,       // No menu.
+        (HINSTANCE)hInstance,
+        NULL);      // Pointer not needed.
+
     HWND serverInfoGroup = CreateWindow("BUTTON", TEXT("Selected Server"), WS_CHILD | WS_VISIBLE | BS_GROUPBOX, 0, 0, 0, 0, hMainWindow, (HMENU)ID_SERVER_INFO_GROUPBOX, hInstance, NULL);
 
     hIPLabel = CreateWindow("STATIC",
@@ -155,6 +194,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         hInstance,                   // instance
         NULL);                     // no extra data
 
+
+    SendMessage(hwndFavourites, BM_SETCHECK, BST_CHECKED, NULL);
 
     ResizeRefreshButton();
 

@@ -346,6 +346,10 @@ static void parse_samp_info_packet(SBQueryEngine* engine, SBServer server, char*
 	strcpy_s(language, sizeof(language), p); p += host_len;
 	language[host_len] = 0;
 
+	if (numplayers >= 100) {
+		server->num_queries++; //no client info will be returned
+	}
+
 	SBServerAddIntKeyValue(server, "numplayers", numplayers);
 	SBServerAddIntKeyValue(server, "maxplayers", maxplayers);
 
@@ -382,32 +386,37 @@ static void parse_samp_rules_packet(SBQueryEngine* engine, SBServer server, char
 
 static void parse_samp_client_packet(SBQueryEngine* engine, SBServer server, char* data, int len) {
 	char* p = &data[11];
+	len -= 11;
 
 
-	char player_key_prefix[512];
-	char name[256];
+	char player_key_prefix[1024];
+	char name[1024];
 
 
-	gsi_u16 player_count = *(gsi_u16*)p; p += sizeof(gsi_u16);
+	gsi_u16 player_count = *(gsi_u16*)p; p += sizeof(gsi_u16); len -= sizeof(gsi_u16);
 
-	for (int i = 0; i < player_count; i++) {
+	for (int i = 0; i < player_count && len > 0; i++) {
 		
-		gsi_u8 key_len = *(gsi_u8*)p; p += sizeof(gsi_u8);
+		gsi_u8 key_len = *(gsi_u8*)p; p += sizeof(gsi_u8);  len -= sizeof(gsi_u8);
 
 		if (key_len > 0) {
-			strcpy_s(name, sizeof(name), p); p += key_len;
+			strcpy_s(name, sizeof(name), p); p += key_len;  len -= key_len;
 		}
 		name[key_len] = 0;
+
+		gsDebugFormat(GSIDebugCat_App, GSIDebugType_Misc, GSIDebugLevel_Notice,
+			"got key: %s\n", name);
 
 		sprintf_s(player_key_prefix, sizeof(player_key_prefix), "name_%d", i);
 		SBServerAddKeyValue(server, player_key_prefix, name);
 
 		sprintf_s(player_key_prefix, sizeof(player_key_prefix), "score_%d", i);
 
-		gsi_u32 score = *(gsi_u32*)p; p += sizeof(gsi_u32);
+		gsi_u32 score = *(gsi_u32*)p; p += sizeof(gsi_u32); len -= sizeof(gsi_u32);
 		SBServerAddIntKeyValue(server, player_key_prefix, score);
 	}
 
+	assert(len == 0);
 
 }
 
@@ -421,6 +430,7 @@ static void ParseSingleQR2Reply(SBQueryEngine *engine, SBServer server, char *da
 
 	switch (data[10]) {
 	case 'i':
+		server->state |= STATE_BASICKEYS;
 		parse_samp_info_packet(engine, server, data, len);
 		break;
 	case 'r':
@@ -430,6 +440,7 @@ static void ParseSingleQR2Reply(SBQueryEngine *engine, SBServer server, char *da
 		OutputDebugStringA("ping data\n");
 		break;
 	case 'c':
+		server->state |= STATE_FULLKEYS;
 		parse_samp_client_packet(engine, server, data, len);
 		break;
 	}
@@ -440,11 +451,7 @@ static void ParseSingleQR2Reply(SBQueryEngine *engine, SBServer server, char *da
 
 	if (server->num_queries == SAMP_EXPECTED_QUERIES) {
 		server->flags |= UNSOLICITED_UDP_FLAG;
-
-		if (server->state & STATE_PENDINGBASICQUERY)
-			server->state |= STATE_BASICKEYS | STATE_VALIDPING;
-		else
-			server->state |= STATE_FULLKEYS | STATE_VALIDPING;
+		server->state |= STATE_VALIDPING;
 
 		server->updatetime = current_time() - server->updatetime;
 

@@ -13,6 +13,8 @@ bool g_debugMode = false;
 
 void SBCallback(ServerBrowser sb, SBCallbackReason reason, SBServer server, void* instance);
 
+void query_favourites();
+
 ServerBrowser g_serverbrowser;  // server browser object initialized with ServerBrowserNew
 unsigned char basicFields[] = { HOSTNAME_KEY, GAMEMODE_KEY,  MAPNAME_KEY, NUMPLAYERS_KEY, MAXPLAYERS_KEY, HOSTPORT_KEY, GAMEVARIANT_KEY };
 int numFields = sizeof(basicFields) / sizeof(basicFields[0]);
@@ -152,9 +154,15 @@ void UpdateServer(SBServer server) {
 		info.lParam = (LPARAM)server;
 		info.flags = LVFI_PARAM;
 		int idx = ListView_FindItem(hwnd_listview, -1, &info);
-		for (int i = 0; i < NUM_COLUMNS; i++) {
-			ListView_SetItemText(hwnd_listview, idx, i, LPSTR_TEXTCALLBACK);
-		}		
+		if (idx == -1) {
+			AddServer(server);
+		}
+		else {
+			for (int i = 0; i < NUM_COLUMNS; i++) {
+				ListView_SetItemText(hwnd_listview, idx, i, LPSTR_TEXTCALLBACK);
+			}
+		}
+		
 	}
 }
 
@@ -189,6 +197,8 @@ void SBCallback(ServerBrowser sb, SBCallbackReason reason, SBServer server, void
 		// output the server's IP and port (the rest of the server's basic keys may not yet be available)
 		if (SBServerHasBasicKeys(server))
 			AddServer(server);
+
+		ServerBrowserAuxUpdateIP(g_serverbrowser, SBServerGetPublicAddress(server), SBServerGetPublicQueryPort(server), SBFalse, SBTrue, SBTrue);
 		break;
 	case sbc_serverchallengereceived: // received ip verification challenge from server
 		// informational, no action required
@@ -236,16 +246,29 @@ void gamespy_refresh() {
 		MessageBoxA(hMainWindow, "A query is already active. Please wait", "SA:MP Launcher", MB_ICONWARNING);
 		return;
 	}
-
-	StatusSetText("Querying server list");
-	g_queryActive = true;
 	HWND     hwnd_listview = GetDlgItem(hMainWindow, ID_LISTVIEW);
 	ListView_DeleteAllItems(hwnd_listview);
 	ServerBrowserClear(g_serverbrowser);
 	//strcpy(serverFilter, "numplayers>0);
 
-
 	HWND  hwndGroup = GetDlgItem(hMainWindow, ID_FILTER_GROUPBOX);
+
+	int query_mode = 0;
+
+	int  favouriteChecked = SendMessage(GetDlgItem(hwndGroup, ID_QUERY_FAVOURITES), BM_GETCHECK, NULL, NULL);
+	int  openspyChecked = SendMessage(GetDlgItem(hwndGroup, ID_QUERY_OPENSPY), BM_GETCHECK, NULL, NULL);
+	int  openspyHostedChecked = SendMessage(GetDlgItem(hwndGroup, ID_QUERY_OPENSPY_HOSTED), BM_GETCHECK, NULL, NULL);
+
+	if (favouriteChecked) {
+		query_mode = 0;
+	}
+	else if (openspyChecked) {
+		query_mode = 1;
+	}
+	else if (openspyHostedChecked) {
+		query_mode = 2;
+	}
+
 	
 	HWND hwnd_notfull = GetDlgItem(hwndGroup, ID_FILTER_NOT_FULL);
 	int  notFullState = SendMessage(hwnd_notfull, BM_GETCHECK, NULL, NULL);
@@ -256,8 +279,7 @@ void gamespy_refresh() {
 	HWND hwnd_nopassword = GetDlgItem(hwndGroup, ID_FILTER_NO_PASSWORD);
 	int  noPasswordState = SendMessage(hwnd_nopassword, BM_GETCHECK, NULL, NULL);
 
-	int num_filters = 0;
-	
+	int num_filters = 0;	
 	serverFilter[0] = 0;
 	if (notFullState) {
 		strcat_s(serverFilter, sizeof(serverFilter), "numplayers<maxplayers");
@@ -281,6 +303,25 @@ void gamespy_refresh() {
 		num_filters++;
 	}
 
+
+	if (query_mode == 0) {
+		//XXX: query favourites
+		query_favourites();
+		return;
+	}
+	/*else if (query_mode == 1) { //internet list (no rules)
+
+	}*/
+	else if (query_mode == 2) { //openspy only (qr2 uplink)
+		if (num_filters > 0) {
+			strcat_s(serverFilter, sizeof(serverFilter), " AND ");
+		}
+		strcat_s(serverFilter, sizeof(serverFilter), "hostmode==1");
+		num_filters++;
+	}
+
+	StatusSetText("Querying server list");
+	g_queryActive = true;
 
 	ServerBrowserUpdate(g_serverbrowser, async, discOnComplete, basicFields, numFields, serverFilter);
 }
@@ -370,9 +411,9 @@ void DisplayRulesListView(SBServer server) {
 
 	ListView_DeleteAllItems(hwndNameEdit);
 
-	//if (!SBServerHasFullKeys(server)) {
-	//	return;
-	//}
+	if (!SBServerHasBasicKeys(server)) {
+		return;
+	}
 
 	SBServerEnumKeys(server, RulesEnumCallback, server);
 }
@@ -458,8 +499,7 @@ void ListViewNotify(HWND hwnd, LPARAM lParam)
 				SendMessage(ipinfo_label, WM_SETTEXT, 0, (LPARAM)ipinfo_str);
 				SendMessage(GetDlgItem(hMainWindow, ID_SERVER_INFO_GROUPBOX), WM_SETTEXT, 0, (LPARAM)SBServerGetStringValue(server, "hostname", "N/A"));
 				DisplayPlayerListView(server);
-				DisplayRulesListView(server);
-			
+				DisplayRulesListView(server);			
 		}
 		break;
 	case LVN_COLUMNCLICK:
@@ -476,10 +516,10 @@ void ListViewNotify(HWND hwnd, LPARAM lParam)
 
 		case NM_DBLCLK:
 		case NM_RETURN:
-			do_launch_samp();
 			if (hOptionsDialog != NULL) {
 				EndDialog(hOptionsDialog, TRUE);
 			}
+			do_launch_samp();
 			break;
 		case LVN_GETDISPINFO:
 			plvdi = (NMLVDISPINFO*)lParam;
@@ -588,4 +628,82 @@ void do_connect_selected_server() {
 		}
 		
 	}
+}
+
+FILE* open_favourites() {
+	// Get the user's gta_sa location
+	char registryData[MAX_PATH];
+	DWORD buffer = sizeof(registryData);
+
+	// Open registry key
+	HKEY hKey;
+	long lError = RegOpenKeyEx(HKEY_CURRENT_USER,
+		"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders",
+		0,
+		KEY_READ,
+		&hKey);
+
+	// Get value
+	DWORD dwRet = RegQueryValueEx(hKey, "Personal", NULL, NULL, (LPBYTE)&registryData, &buffer);
+
+	RegCloseKey(hKey);
+
+	strcat_s(registryData, sizeof(registryData), "\\GTA San Andreas User Files\\SAMP\\USERDATA.DAT");
+
+	char full_path[MAX_PATH];
+	ExpandEnvironmentStringsA(registryData, full_path, sizeof(full_path));
+	FILE *fd = fopen(full_path, "rb");
+	return fd;
+}
+void query_favourites() {
+	FILE* fd = open_favourites();
+	StatusSetText("Querying favourites list");
+	gsi_i32 header;
+	fread(&header, sizeof(header), 1, fd);
+	if (header == 1347240275) {
+		gsi_i32 version;
+
+		fread(&version, sizeof(version), 1, fd);
+
+		if (version == 1) {
+			gsi_i32 num_servers;
+			fread(&num_servers, sizeof(num_servers), 1, fd);
+
+			while (num_servers--) {
+				gsi_i32 address_length;
+				char address[256];
+				fread(&address_length, sizeof(address_length), 1, fd);
+				//XXX: cap length
+
+				if (address_length > sizeof(address)) {
+					fclose(fd);
+					return;
+				}
+
+				fread(&address, address_length, 1, fd);
+				
+				address[address_length] = 0;
+				char* port_str = strchr(address, ':');
+				if (port_str != NULL) {
+					*port_str = 0;
+					port_str++;
+				}
+				gsi_i32 port;
+				fread(&port, sizeof(port), 1, fd);
+
+				DebugOut("favourites address: %s:%d\n", address, port);
+				fread(&address_length, sizeof(address_length), 1, fd);
+				fseek(fd, address_length, SEEK_CUR);//skip data
+				fseek(fd, sizeof(gsi_i32) * 2, SEEK_CUR);
+
+				hostent *host = gethostbyname(address);
+
+				if (host) {
+					ServerBrowserAuxUpdateIP(g_serverbrowser, inet_ntoa(*(struct in_addr*)(host->h_addr_list[0])), port, SBFalse, SBTrue, SBTrue);
+				}
+			}
+
+		}
+	}
+	fclose(fd);
 }
