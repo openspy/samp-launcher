@@ -27,7 +27,9 @@ enum {
 	ID_QUERY_OPENSPY_HOSTED
 };
 
-extern HWND hMainWindow;
+extern "C" {
+	extern HWND hMainWindow;
+}
 
 #define SAMP_DEFAULT_PORT 7777
 #define MAX_SAMP_NAME 24

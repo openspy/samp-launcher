@@ -14,7 +14,10 @@ HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE
 
 void ResizeRefreshButton();
 
-HWND hMainWindow;
+extern "C" {
+    HWND hMainWindow;
+}
+
 HWND hRefeshButton;
 HWND hwndListView;
 HWND hOptionsDialog;
@@ -206,6 +209,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     init_gamespy();
     gamespy_refresh();
+
+    SetTimer(hMainWindow, WM_USER + 3, 2000, NULL); //UI loop update timer
 
     MSG msg = { };
     while (GetMessage(&msg, NULL, 0, 0) > 0)

@@ -181,7 +181,7 @@ void DeleteServer(SBServer server) {
 
 void set_complete_text() {
 	char complete_buff[256];
-	sprintf_s(complete_buff, sizeof(complete_buff), "Server Browser Update Complete - %d servers", ServerBrowserCount(g_serverbrowser));
+	sprintf_s(complete_buff, sizeof(complete_buff), "Update Complete - %d servers", ServerBrowserCount(g_serverbrowser));
 	StatusSetText(complete_buff);
 }
 void set_query_error_text() {
@@ -195,8 +195,7 @@ void SBCallback(ServerBrowser sb, SBCallbackReason reason, SBServer server, void
 	{
 	case sbc_serveradded:  // new SBServer added to the server browser list
 		// output the server's IP and port (the rest of the server's basic keys may not yet be available)
-		if (SBServerHasBasicKeys(server))
-			AddServer(server);
+		AddServer(server);
 
 		ServerBrowserAuxUpdateIP(g_serverbrowser, SBServerGetPublicAddress(server), SBServerGetPublicQueryPort(server), SBFalse, SBTrue, SBTrue);
 		break;
@@ -205,12 +204,11 @@ void SBCallback(ServerBrowser sb, SBCallbackReason reason, SBServer server, void
 		break;
 	case sbc_serverupdated:  // either basic or full information is now available for this server
 		// retrieve and print the basic server fields (specified as a parameter in ServerBrowserUpdate)
-		if (SBServerHasBasicKeys(server))
-			UpdateServer(server);
+		UpdateServer(server);
 		break;
 	case sbc_serverupdatefailed:
 		AppDebug(_T("Update Failed: %s:%d\n"), SBServerGetPublicAddress(server), SBServerGetPublicQueryPort(server));
-		DeleteServer(server);
+		AddServer(server);
 		break;
 	case sbc_updatecomplete: // update is complete; server query engine is now idle (not called upon AuxUpdate completion)
 		AppDebug(_T("Server Browser Update Complete\r\n"));
@@ -305,7 +303,6 @@ void gamespy_refresh() {
 
 
 	if (query_mode == 0) {
-		//XXX: query favourites
 		query_favourites();
 		return;
 	}
@@ -353,8 +350,7 @@ void do_sorting() {
 	{
 		// if we got basic info for it, put it back in the list
 		SBServer server = ServerBrowserGetServer(g_serverbrowser, i);
-		if (SBServerHasBasicKeys(server))
-			AddServer(server);
+		AddServer(server);
 	}
 }
 
@@ -529,13 +525,19 @@ void ListViewNotify(HWND hwnd, LPARAM lParam)
 				switch (plvdi->item.iSubItem)
 				{
 				case 0:
-					plvdi->item.pszText = (LPSTR)SBServerGetStringValue(server, _T("hostname"), defaultString);
+					if (SBServerHasBasicKeys(server)) {
+						plvdi->item.pszText = (LPSTR)SBServerGetStringValue(server, _T("hostname"), defaultString);
+					}
+					else {
+						sprintf_s(plvdi->item.pszText, 259, "(Retrieving Info...) %s:%d", SBServerGetPublicAddress(server), SBServerGetPublicQueryPort(server));
+					}
+					
 					break;
 				case 1:
 					sprintf_s(plvdi->item.pszText, 259, "%d/%d", SBServerGetIntValue(server, "numplayers", 0), SBServerGetIntValue(server, "maxplayers", 0));
 					break;
 				case 2:
-					if (SBServerDirectConnect(server)) {
+					if (SBServerHasBasicKeys(server)) {
 						sprintf_s(plvdi->item.pszText, 259, "%d", SBServerGetPing(server));
 					}
 					else {
@@ -673,7 +675,6 @@ void query_favourites() {
 				gsi_i32 address_length;
 				char address[256];
 				fread(&address_length, sizeof(address_length), 1, fd);
-				//XXX: cap length
 
 				if (address_length > sizeof(address)) {
 					fclose(fd);

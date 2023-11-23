@@ -290,7 +290,8 @@ struct _SBServer
 	gsi_u32 querychallenge;
 	struct _SBServer *next;
 	gsi_u8 splitResponseBitmap;
-	gsi_u8 num_queries;
+	gsi_u8 got_samp_info;
+	gsi_u8 got_samp_rules;
 };
 
 #endif

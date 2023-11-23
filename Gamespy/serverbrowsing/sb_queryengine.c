@@ -8,8 +8,6 @@
 #include "sb_serverbrowsing.h"
 #include "sb_internal.h"
 
-#define SAMP_EXPECTED_QUERIES 3
-
 #ifdef GSI_MANIC_DEBUG
 // Make sure the server isn't already in the fifo
 void FIFODebugCheckAdd(SBServerFIFO *fifo, SBServer server)
@@ -157,7 +155,8 @@ static void QEStartQuery(SBQueryEngine *engine, SBServer server)
 
 	saddr.sin_family = AF_INET;
 	server->updatetime = current_time();
-	server->num_queries = 0;
+	server->got_samp_info = 0;
+	server->got_samp_rules = 0;
 
 	if (engine->queryversion == QVERSION_QR2)
 	{
@@ -205,6 +204,8 @@ static void QEStartQuery(SBQueryEngine *engine, SBServer server)
 }
 
 
+extern HWND hMainWindow; //HACK!!!
+
 void SBQueryEngineInit(SBQueryEngine *engine, int maxupdates, int queryversion, SBBool lanBrowse, SBEngineCallbackFn callback, void *instance)
 {
 	// 11-03-2004 : Added by Saad Nader
@@ -240,6 +241,9 @@ void SBQueryEngineInit(SBQueryEngine *engine, int maxupdates, int queryversion, 
 		#endif
 	#endif
 #endif
+
+	WSAAsyncSelect(engine->querysock, hMainWindow, (WM_APP + 1), FD_READ);
+	WSAAsyncSelect(engine->querysock, hMainWindow, (WM_APP + 2), FD_READ);
 	FIFOClear(&engine->pendinglist);
 	FIFOClear(&engine->querylist);
 }
@@ -346,10 +350,6 @@ static void parse_samp_info_packet(SBQueryEngine* engine, SBServer server, char*
 	strcpy_s(language, sizeof(language), p); p += host_len;
 	language[host_len] = 0;
 
-	if (numplayers >= 100) {
-		server->num_queries++; //no client info will be returned
-	}
-
 	SBServerAddIntKeyValue(server, "numplayers", numplayers);
 	SBServerAddIntKeyValue(server, "maxplayers", maxplayers);
 
@@ -404,9 +404,6 @@ static void parse_samp_client_packet(SBQueryEngine* engine, SBServer server, cha
 		}
 		name[key_len] = 0;
 
-		gsDebugFormat(GSIDebugCat_App, GSIDebugType_Misc, GSIDebugLevel_Notice,
-			"got key: %s\n", name);
-
 		sprintf_s(player_key_prefix, sizeof(player_key_prefix), "name_%d", i);
 		SBServerAddKeyValue(server, player_key_prefix, name);
 
@@ -431,25 +428,23 @@ static void ParseSingleQR2Reply(SBQueryEngine *engine, SBServer server, char *da
 	switch (data[10]) {
 	case 'i':
 		server->state |= STATE_BASICKEYS;
+		server->got_samp_info = 1;
 		parse_samp_info_packet(engine, server, data, len);
 		break;
 	case 'r':
+		server->got_samp_rules = 1;
 		parse_samp_rules_packet(engine, server, data, len);
 		break;
-	case 'p':
-		OutputDebugStringA("ping data\n");
-		break;
+	//case 'p':
+	//	OutputDebugStringA("ping data\n");
+	//	break;
 	case 'c':
 		server->state |= STATE_FULLKEYS;
 		parse_samp_client_packet(engine, server, data, len);
 		break;
 	}
 
-	server->num_queries++;
-
-		
-
-	if (server->num_queries == SAMP_EXPECTED_QUERIES) {
+	if (server->got_samp_info && server->got_samp_rules) {
 		server->flags |= UNSOLICITED_UDP_FLAG;
 		server->state |= STATE_VALIDPING;
 
