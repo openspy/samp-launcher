@@ -31,8 +31,8 @@ int sort_type = 0;
 /********
 DEFINES
 ********/
-#define GAME_NAME		_T("gmtest")
-#define SECRET_KEY		_T("HA6zkS")
+#define GAME_NAME		_T("gtasamp")
+#define SECRET_KEY		_T("FZ4p58")
 
 /********
 DEBUG OUTPUT
@@ -692,7 +692,6 @@ void query_favourites() {
 				gsi_i32 port;
 				fread(&port, sizeof(port), 1, fd);
 
-				DebugOut("favourites address: %s:%d\n", address, port);
 				fread(&address_length, sizeof(address_length), 1, fd);
 				fseek(fd, address_length, SEEK_CUR);//skip data
 				fseek(fd, sizeof(gsi_i32) * 2, SEEK_CUR);

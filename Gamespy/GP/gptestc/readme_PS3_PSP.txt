@@ -1,1 +1,0 @@
-Please reference GameSpy\webservices\authtest for PS3/PSP GP sample apps. 

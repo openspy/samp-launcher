@@ -394,13 +394,20 @@ static void parse_samp_client_packet(SBQueryEngine* engine, SBServer server, cha
 
 
 	gsi_u16 player_count = *(gsi_u16*)p; p += sizeof(gsi_u16); len -= sizeof(gsi_u16);
+	assert(len >= 0);
 
 	for (int i = 0; i < player_count && len > 0; i++) {
 		
 		gsi_u8 key_len = *(gsi_u8*)p; p += sizeof(gsi_u8);  len -= sizeof(gsi_u8);
+		assert(len >= 0);
+
+		if (key_len > len) {
+			break;
+		}
 
 		if (key_len > 0) {
 			strcpy_s(name, sizeof(name), p); p += key_len;  len -= key_len;
+			assert(len >= 0);
 		}
 		name[key_len] = 0;
 
@@ -411,9 +418,10 @@ static void parse_samp_client_packet(SBQueryEngine* engine, SBServer server, cha
 
 		gsi_u32 score = *(gsi_u32*)p; p += sizeof(gsi_u32); len -= sizeof(gsi_u32);
 		SBServerAddIntKeyValue(server, player_key_prefix, score);
+		assert(len >= 0);
 	}
 
-	assert(len == 0);
+	//assert(len == 0);
 
 }
 
