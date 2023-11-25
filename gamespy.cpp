@@ -655,8 +655,17 @@ FILE* open_favourites() {
 		KEY_READ,
 		&hKey);
 
+	if (lError != ERROR_SUCCESS) {
+		return NULL;
+	}
+
 	// Get value
 	DWORD dwRet = RegQueryValueEx(hKey, "Personal", NULL, NULL, (LPBYTE)&registryData, &buffer);
+
+	if (lError != ERROR_SUCCESS) {
+		RegCloseKey(hKey);
+		return NULL;
+	}
 
 	RegCloseKey(hKey);
 
@@ -669,6 +678,10 @@ FILE* open_favourites() {
 }
 void query_favourites() {
 	FILE* fd = open_favourites();
+	if (fd == NULL) {
+		StatusSetText("Failed to load favourites list");
+		return;
+	}
 	StatusSetText("Querying favourites list");
 	gsi_i32 header;
 	fread(&header, sizeof(header), 1, fd);
