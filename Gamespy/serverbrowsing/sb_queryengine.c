@@ -340,18 +340,34 @@ static void parse_samp_info_packet(SBQueryEngine* engine, SBServer server, char*
 	char language[256];
 
 	
-	gsi_u16 numplayers = *(gsi_u16*)p; p += sizeof(gsi_u16);
-	gsi_u16 maxplayers = *(gsi_u16*)p; p += sizeof(gsi_u16);
-	gsi_u32 host_len = *(gsi_u32*)p; p += sizeof(gsi_u32);
-	strcpy_s(hostname, sizeof(hostname), p); p += host_len;
+	gsi_u16 numplayers = *(gsi_u16*)p; p += sizeof(gsi_u16); len -= sizeof(gsi_u16);
+	if (len < 0) {
+		return;
+	}
+	gsi_u16 maxplayers = *(gsi_u16*)p; p += sizeof(gsi_u16); len -= sizeof(gsi_u16);
+	if (len < 0) {
+		return;
+	}
+	gsi_u32 host_len = *(gsi_u32*)p; p += sizeof(gsi_u32); len -= sizeof(gsi_u32);
+	if (len < 0 || host_len > len) {
+		return;
+	}
+	strcpy_s(hostname, sizeof(hostname), p); p += host_len; len -= host_len;
+	
 	hostname[host_len] = 0;
 
 	host_len = *(gsi_u32*)p; p += sizeof(gsi_u32);
-	strcpy_s(gamemode, sizeof(gamemode), p); p += host_len;
+	if (len < 0 || host_len > len) {
+		return;
+	}
+	strcpy_s(gamemode, sizeof(gamemode), p); p += host_len; len -= host_len;
 	gamemode[host_len] = 0;
 
 	host_len = *(gsi_u32*)p; p += sizeof(gsi_u32);
-	strcpy_s(language, sizeof(language), p); p += host_len;
+	if (len < 0 || host_len > len) {
+		return;
+	}
+	strcpy_s(language, sizeof(language), p); p += host_len; len -= host_len;
 	language[host_len] = 0;
 
 	SBServerAddIntKeyValue(server, "numplayers", numplayers);
