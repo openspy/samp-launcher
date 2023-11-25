@@ -331,6 +331,10 @@ static void parse_samp_info_packet(SBQueryEngine* engine, SBServer server, char*
 	char* p = &data[11];
 	gsi_u8 password = *(gsi_u8*)p; p++;
 
+	SBServerAddIntKeyValue(server, "hostport", htons(server->publicport));
+
+	SBServerAddIntKeyValue(server, "password", password);
+
 	char hostname[256];
 	char gamemode[256];
 	char language[256];
@@ -366,18 +370,24 @@ static void parse_samp_rules_packet(SBQueryEngine* engine, SBServer server, char
 	char value[1024];
 
 
-	gsi_u16 num_rules = *(gsi_u16*)p; p += sizeof(gsi_u16);
+	gsi_u16 num_rules = *(gsi_u16*)p; p += sizeof(gsi_u16); len -= sizeof(gsi_u16);
 
-	for (int i = 0; i < num_rules; i++) {
-		gsi_u8 key_len = *(gsi_u8*)p; p += sizeof(gsi_u8);
 
+	for (int i = 0; i < num_rules && len > 0; i++) {
+		gsi_u8 key_len = *(gsi_u8*)p; p += sizeof(gsi_u8); len--;
+		if (key_len > len) { //MTU cutoff can occur...
+			break;
+		}
 		key[0] = 0;
-		strcpy_s(key, sizeof(key), p); p += key_len;
+		strcpy_s(key, sizeof(key), p); p += key_len; len -= key_len;
 		key[key_len] = 0;
 
-		key_len = *(gsi_u8*)p; p += sizeof(gsi_u8);
+		key_len = *(gsi_u8*)p; p += sizeof(gsi_u8); len--;
+		if (key_len > len) { //MTU cutoff can occur...
+			break;
+		}
 		value[0] = 0;
-		strcpy_s(value, sizeof(value), p); p += key_len;
+		strcpy_s(value, sizeof(value), p); p += key_len; len -= key_len;
 		value[key_len] = 0;
 
 		SBServerAddKeyValue(server, key, value);
@@ -401,7 +411,7 @@ static void parse_samp_client_packet(SBQueryEngine* engine, SBServer server, cha
 		gsi_u8 key_len = *(gsi_u8*)p; p += sizeof(gsi_u8);  len -= sizeof(gsi_u8);
 		assert(len >= 0);
 
-		if (key_len > len) {
+		if (key_len > len) { //MTU cutoff can occur...
 			break;
 		}
 
@@ -416,9 +426,13 @@ static void parse_samp_client_packet(SBQueryEngine* engine, SBServer server, cha
 
 		sprintf_s(player_key_prefix, sizeof(player_key_prefix), "score_%d", i);
 
+		if (len < sizeof(gsi_u32)) { //MTU cutoff can occur...
+			break;
+		}
+
 		gsi_u32 score = *(gsi_u32*)p; p += sizeof(gsi_u32); len -= sizeof(gsi_u32);
 		SBServerAddIntKeyValue(server, player_key_prefix, score);
-		assert(len >= 0);
+		//assert(len >= 0);
 	}
 
 	//assert(len == 0);

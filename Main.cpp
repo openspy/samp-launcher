@@ -79,7 +79,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     hMainWindow = CreateWindowEx(
         0,                              // Optional window styles.
         CLASS_NAME,                     // Window class
-        "SAMP Launcher",    // Window text
+        "SA:MP Launcher",    // Window text
         WS_OVERLAPPEDWINDOW,            // Window style
 
         // Size and position
@@ -104,16 +104,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         NULL);                     // no extra data
 
 
-    HWND filterGroup = CreateWindow("BUTTON", TEXT("Filter"), WS_CHILD | WS_VISIBLE | BS_GROUPBOX, 0, 0, 0, 0, hMainWindow, (HMENU)ID_FILTER_GROUPBOX, hInstance, NULL);
+    HWND filterGroup = CreateWindow("BUTTON", TEXT("Filter"), WS_CHILD | WS_VISIBLE | BS_GROUPBOX | BS_NOTIFY, 0, 0, 0, 0, hMainWindow, (HMENU)ID_FILTER_GROUPBOX, hInstance, NULL);
     CreateWindow(
         "BUTTON",  // Predefined class; Unicode assumed 
         "Not Full",      // Button text 
-        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX,  // Styles 
-        10,         // x position 
-        25,         // y position 
-        105,        // Button width
-        15,        // Button height
-        filterGroup,     // Parent window
+        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX | WS_DISABLED,  // Styles 
+        0,         // x position 
+        0,         // y position 
+        0,        // Button width
+        0,        // Button height
+        hMainWindow,     // Parent window
         (HMENU)ID_FILTER_NOT_FULL,       // No menu.
         (HINSTANCE)hInstance,
         NULL);      // Pointer not needed.
@@ -121,12 +121,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     CreateWindow(
         "BUTTON",  // Predefined class; Unicode assumed 
         "Not Empty",      // Button text 
-        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX,  // Styles 
-        10,         // x position 
-        45,         // y position 
-        105,        // Button width
-        15,        // Button height
-        filterGroup,     // Parent window
+        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX | WS_DISABLED,  // Styles 
+        0,         // x position 
+        0,         // y position 
+        0,        // Button width
+        0,        // Button height
+        hMainWindow,     // Parent window
         (HMENU)ID_FILTER_NOT_EMPTY,       // No menu.
         (HINSTANCE)hInstance,
         NULL);      // Pointer not needed.
@@ -134,12 +134,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     CreateWindow(
         "BUTTON",  // Predefined class; Unicode assumed 
         "No Password",      // Button text 
-        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX,  // Styles 
-        10,         // x position 
-        65,         // y position 
-        105,        // Button width
-        15,        // Button height
-        filterGroup,     // Parent window
+        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX | WS_DISABLED,  // Styles 
+        0,         // x position 
+        0,         // y position 
+        0,        // Button width
+        0,        // Button height
+        hMainWindow,     // Parent window
         (HMENU)ID_FILTER_NO_PASSWORD,       // No menu.
         (HINSTANCE)hInstance,
         NULL);      // Pointer not needed.
@@ -147,12 +147,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     HWND hwndFavourites = CreateWindow(
         "BUTTON",  // Predefined class; Unicode assumed 
         "Favourites",      // Button text 
-        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON,  // Styles 
-        120,         // x position 
-        25,         // y position 
-        105,        // Button width
-        15,        // Button height
-        filterGroup,     // Parent window
+        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON | BS_NOTIFY,  // Styles 
+        0,         // x position 
+        0,         // y position 
+        0,        // Button width
+        0,        // Button height
+        hMainWindow,     // Parent window
         (HMENU)ID_QUERY_FAVOURITES,       // No menu.
         (HINSTANCE)hInstance,
         NULL);      // Pointer not needed.
@@ -160,12 +160,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     CreateWindow(
         "BUTTON",  // Predefined class; Unicode assumed 
         "Internet",      // Button text 
-        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON,  // Styles 
-        120,         // x position 
-        45,         // y position 
-        105,        // Button width
-        15,        // Button height
-        filterGroup,     // Parent window
+        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON | BS_NOTIFY,  // Styles 
+        0,         // x position 
+        0,         // y position 
+        0,        // Button width
+        0,        // Button height
+        hMainWindow,     // Parent window
         (HMENU)ID_QUERY_OPENSPY,       // No menu.
         (HINSTANCE)hInstance,
         NULL);      // Pointer not needed.
@@ -173,12 +173,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     CreateWindow(
         "BUTTON",  // Predefined class; Unicode assumed 
         "OpenSpy",      // Button text 
-        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON,  // Styles 
-        120,         // x position 
-        65,         // y position 
-        105,        // Button width
-        15,        // Button height
-        filterGroup,     // Parent window
+        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON | BS_NOTIFY,  // Styles 
+        0,         // x position 
+        0,         // y position 
+        0,        // Button width
+        0,        // Button height
+        hMainWindow,     // Parent window
         (HMENU)ID_QUERY_OPENSPY_HOSTED,       // No menu.
         (HINSTANCE)hInstance,
         NULL);      // Pointer not needed.
@@ -342,21 +342,96 @@ void ResizeRefreshButton() {
         TRUE);
 
 
+    RECT  rcFilter;
     HWND filtergroup_label = GetDlgItem(hMainWindow, ID_FILTER_GROUPBOX);
-    GetClientRect(hMainWindow, &rc);
+    GetClientRect(hMainWindow, &rcFilter);
 
     const int FILTER_X_OFFSET = 175;
     const int FILTER_Y_OFFSET = -5;
 
-    rc.top = rc.bottom - FILTER_X_OFFSET;
-    rc.left = rc.left - FILTER_Y_OFFSET;
+    rcFilter.top = rcFilter.bottom - FILTER_X_OFFSET;
+    rcFilter.left = rcFilter.left - FILTER_Y_OFFSET;
 
     MoveWindow(filtergroup_label,
-        rc.left,
-        rc.top,
+        rcFilter.left,
+        rcFilter.top,
         250,
         95,
         TRUE);
+
+
+    HWND hwndFilterButton = GetDlgItem(hMainWindow, ID_FILTER_NOT_FULL);
+    rc = rcFilter;
+
+    rc.left += 10;
+    rc.top += 25;
+    MoveWindow(hwndFilterButton,
+        rc.left,
+        rc.top,
+        105,
+        15,
+        TRUE);
+
+    hwndFilterButton = GetDlgItem(hMainWindow, ID_FILTER_NOT_EMPTY);
+    rc = rcFilter;
+
+    rc.left += 10;
+    rc.top += 45;
+    MoveWindow(hwndFilterButton,
+        rc.left,
+        rc.top,
+        105,
+        15,
+        TRUE);
+
+    hwndFilterButton = GetDlgItem(hMainWindow, ID_FILTER_NO_PASSWORD);
+    rc = rcFilter;
+
+    rc.left += 10;
+    rc.top += 65;
+    MoveWindow(hwndFilterButton,
+        rc.left,
+        rc.top,
+        105,
+        15,
+        TRUE);
+
+    hwndFilterButton = GetDlgItem(hMainWindow, ID_QUERY_FAVOURITES);
+    rc = rcFilter;
+
+    rc.left += 120;
+    rc.top += 25;
+    MoveWindow(hwndFilterButton,
+        rc.left,
+        rc.top,
+        105,
+        15,
+        TRUE);
+
+    hwndFilterButton = GetDlgItem(hMainWindow, ID_QUERY_OPENSPY);
+    rc = rcFilter;
+
+    rc.left += 120;
+    rc.top += 45;
+    MoveWindow(hwndFilterButton,
+        rc.left,
+        rc.top,
+        105,
+        15,
+        TRUE);
+
+    hwndFilterButton = GetDlgItem(hMainWindow, ID_QUERY_OPENSPY_HOSTED);
+    rc = rcFilter;
+
+    rc.left += 120;
+    rc.top += 65;
+    MoveWindow(hwndFilterButton,
+        rc.left,
+        rc.top,
+        105,
+        15,
+        TRUE);
+
 
     HWND serverinfo_label = GetDlgItem(hMainWindow, ID_SERVER_INFO_GROUPBOX);
     GetClientRect(hMainWindow, &rc);
@@ -373,24 +448,6 @@ void ResizeRefreshButton() {
         370,
         135,
         TRUE);
-
-    //HWND ipinfo_label = GetDlgItem(serverinfo_label, ID_SERVER_IP_TEXT);
-
-    //GetClientRect(hMainWindow, &rc);
-
-    //const int SELECTED_INFO_X_OFFSET = 0;
-    //const int SELECTED_INFO_Y_OFFSET = 0;
-
-    //rc.top = rc.bottom - SELECTED_INFO_X_OFFSET;
-    //rc.left = rc.left - SELECTED_INFO_Y_OFFSET;
-
-    //MoveWindow(ipinfo_label,
-    //    rc.left,
-    //    rc.top,
-    //    350,
-    //    120,
-    //    TRUE);
-
 
     
 }
@@ -778,6 +835,23 @@ INT_PTR CALLBACK OptionsDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARA
 void ResizeStatusText() {
     SendMessage(hwndStatus, WM_SIZE, 0, 0);
 }
+
+void handle_filter_disabled_states() {
+    int  favouriteChecked = SendMessage(GetDlgItem(hMainWindow, ID_QUERY_FAVOURITES), BM_GETCHECK, NULL, NULL);
+    if (favouriteChecked) {
+         //disable buttons
+        EnableWindow(GetDlgItem(hMainWindow, ID_FILTER_NOT_FULL), FALSE);
+        EnableWindow(GetDlgItem(hMainWindow, ID_FILTER_NOT_EMPTY), FALSE);
+        EnableWindow(GetDlgItem(hMainWindow, ID_FILTER_NO_PASSWORD), FALSE);
+    }
+    else {
+        //enable
+        EnableWindow(GetDlgItem(hMainWindow, ID_FILTER_NOT_FULL), TRUE);
+        EnableWindow(GetDlgItem(hMainWindow, ID_FILTER_NOT_EMPTY), TRUE);
+        EnableWindow(GetDlgItem(hMainWindow, ID_FILTER_NO_PASSWORD), TRUE);
+    }
+}
+
 LRESULT Wndproc(
     HWND hwnd,        // handle to window
     UINT uMsg,        // message identifier
@@ -787,7 +861,6 @@ LRESULT Wndproc(
     CREATESTRUCT* createStruct;
 
     NMHDR* notifyMsg;
-
     switch (uMsg)
     {
     case WM_CREATE:
@@ -809,7 +882,7 @@ LRESULT Wndproc(
         ResizeRefreshButton();
         ResizeStatusText();
         ResizeServerDetailsListViews(hwnd);
-        //InvalidateRect(hwnd, NULL, TRUE);
+        InvalidateRect(hwnd, NULL, FALSE);
         break;
     case WM_COMMAND:
         if (LOWORD(wParam) == ID_REFRESH) {
@@ -820,6 +893,9 @@ LRESULT Wndproc(
             }
 
             break;
+        }
+        else if (LOWORD(wParam) == ID_QUERY_FAVOURITES || LOWORD(wParam) == ID_QUERY_OPENSPY || LOWORD(wParam) == ID_QUERY_OPENSPY_HOSTED) {
+            handle_filter_disabled_states();
         }
         if (hOptionsDialog != NULL) {
             EndDialog(hOptionsDialog, TRUE);

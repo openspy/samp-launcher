@@ -246,6 +246,13 @@ void gamespy_refresh() {
 	}
 	HWND     hwnd_listview = GetDlgItem(hMainWindow, ID_LISTVIEW);
 	ListView_DeleteAllItems(hwnd_listview);
+
+	HWND     hwndNameEdit = GetDlgItem(hMainWindow, ID_PLAYERS_LISTVIEW);
+	ListView_DeleteAllItems(hwndNameEdit);
+
+	HWND     hwndRuleEdit = GetDlgItem(hMainWindow, ID_RULES_LISTVIEW);
+	ListView_DeleteAllItems(hwndRuleEdit);
+
 	ServerBrowserClear(g_serverbrowser);
 	//strcpy(serverFilter, "numplayers>0);
 
@@ -253,9 +260,9 @@ void gamespy_refresh() {
 
 	int query_mode = 0;
 
-	int  favouriteChecked = SendMessage(GetDlgItem(hwndGroup, ID_QUERY_FAVOURITES), BM_GETCHECK, NULL, NULL);
-	int  openspyChecked = SendMessage(GetDlgItem(hwndGroup, ID_QUERY_OPENSPY), BM_GETCHECK, NULL, NULL);
-	int  openspyHostedChecked = SendMessage(GetDlgItem(hwndGroup, ID_QUERY_OPENSPY_HOSTED), BM_GETCHECK, NULL, NULL);
+	int  favouriteChecked = SendMessage(GetDlgItem(hMainWindow, ID_QUERY_FAVOURITES), BM_GETCHECK, NULL, NULL);
+	int  openspyChecked = SendMessage(GetDlgItem(hMainWindow, ID_QUERY_OPENSPY), BM_GETCHECK, NULL, NULL);
+	int  openspyHostedChecked = SendMessage(GetDlgItem(hMainWindow, ID_QUERY_OPENSPY_HOSTED), BM_GETCHECK, NULL, NULL);
 
 	if (favouriteChecked) {
 		query_mode = 0;
@@ -268,13 +275,13 @@ void gamespy_refresh() {
 	}
 
 	
-	HWND hwnd_notfull = GetDlgItem(hwndGroup, ID_FILTER_NOT_FULL);
+	HWND hwnd_notfull = GetDlgItem(hMainWindow, ID_FILTER_NOT_FULL);
 	int  notFullState = SendMessage(hwnd_notfull, BM_GETCHECK, NULL, NULL);
 
-	HWND hwnd_notempty = GetDlgItem(hwndGroup, ID_FILTER_NOT_EMPTY);
+	HWND hwnd_notempty = GetDlgItem(hMainWindow, ID_FILTER_NOT_EMPTY);
 	int  notEmptyState = SendMessage(hwnd_notempty, BM_GETCHECK, NULL, NULL);
 
-	HWND hwnd_nopassword = GetDlgItem(hwndGroup, ID_FILTER_NO_PASSWORD);
+	HWND hwnd_nopassword = GetDlgItem(hMainWindow, ID_FILTER_NO_PASSWORD);
 	int  noPasswordState = SendMessage(hwnd_nopassword, BM_GETCHECK, NULL, NULL);
 
 	int num_filters = 0;	
@@ -480,12 +487,15 @@ void ListViewNotify(HWND hwnd, LPARAM lParam)
 	{
 	case LVN_ITEMCHANGED:
 		pnmv = (LPNMLISTVIEW)lParam;
+		if (!(pnmv->uNewState & LVIS_SELECTED)) {
+			return;
+		}
 		iItem.iItem = pnmv->iItem;
 		iItem.mask |= LVIF_PARAM;
 		x = ListView_GetItem(hwnd_listview, &iItem);
 		server = (SBServer)iItem.lParam;
 
-		if (server) {
+		if (server ) {
 			ipinfo_label = GetDlgItem(GetDlgItem(hMainWindow, ID_SERVER_INFO_GROUPBOX), ID_SERVER_IP_TEXT);
 			sprintf_s(ipinfo_str, sizeof(ipinfo_str), "Address: %s : %d\nPlayers : %d / %d\nPing : %d\nPassword : %s\nMode : %s\nLanguage : %s",
 				SBServerGetPublicAddress(server), SBServerGetIntValue(server, "hostport", SAMP_DEFAULT_PORT),
